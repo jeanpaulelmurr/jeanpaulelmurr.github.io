@@ -43,24 +43,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Smooth scroll for all in-page anchors (handles offset for fixed navbar)
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-            const href = link.getAttribute('href');
-            if (!href || href === '#') return;
-            if (href.startsWith('#')) {
-                const target = document.querySelector(href);
-                if (target) {
-                    e.preventDefault();
-                    const topOffset = document.querySelector('.navbar')?.offsetHeight || 0;
-                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - topOffset - 16;
-                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                    // close mobile nav if open
-                    navbar.classList.remove('nav-open');
-                }
+    // Smooth scroll (delegated) for all in-page anchors (handles offset for fixed navbar)
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest && e.target.closest('a[href^="#"]');
+        if (!link) return;
+        const href = link.getAttribute('href');
+        if (!href || href === '#') return;
+        if (href.startsWith('#')) {
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                const topOffset = document.querySelector('.navbar')?.offsetHeight || 0;
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - topOffset - 12;
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                // close mobile nav if open
+                navbar.classList.remove('nav-open');
             }
-        });
-    });
+        }
+    }, false);
 });
 
 // Check if guest is invited
