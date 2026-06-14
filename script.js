@@ -43,7 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sidebar) {
         const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
         sidebarLinks.forEach(link => {
-            link.addEventListener('click', () => {
+            link.addEventListener('click', (e) => {
+                // smooth scroll to section with offset for fixed top elements
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        const topOffset = document.querySelector('.navbar')?.offsetHeight || 0;
+                        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - topOffset - 16;
+                        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                    }
+                }
                 sidebar.classList.remove('active');
             });
         });

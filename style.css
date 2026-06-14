@@ -13,6 +13,11 @@ body {
 
 /* Sidebar Toolbar */
 .sidebar {
+
+/* Enable smooth scrolling for anchor navigation (CSS fallback) */
+html {
+    scroll-behavior: smooth;
+}
     position: fixed;
     left: 0;
     top: 0;
@@ -500,33 +505,56 @@ footer {
         margin-left: 0;
     }
 
+    /* Sidebar becomes top bar on mobile */
     .sidebar {
-        width: 100%;
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
         height: auto;
+        width: 100%;
         flex-direction: row;
-        padding: 10px;
+        padding: 10px 14px;
         justify-content: space-between;
         align-items: center;
     }
 
-    .sidebar:hover,
-    .sidebar.active {
-        width: 100%;
+    /* hide main nav links and use sidebar toggle instead */
+    .nav-links {
+        display: none;
     }
 
     .sidebar-nav {
         display: none;
         position: absolute;
-        top: 50px;
+        top: 56px;
         left: 0;
         right: 0;
         flex-direction: column;
-        background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
-        padding: 1rem;
+        background: linear-gradient(180deg, var(--primary) 0%, #162027 100%);
+        padding: 0.5rem 1rem;
+        gap: .5rem;
     }
 
     .sidebar.active .sidebar-nav {
         display: flex;
+    }
+
+    .sidebar-toggle {
+        display: flex;
+        z-index: 10001;
+    }
+
+    .sidebar-toggle span {
+        background: white;
+        height: 3px;
+        width: 26px;
+        display: block;
+    }
+
+    .hero {
+        padding: 60px 20px;
+        min-height: 360px;
     }
 
     .hero-content h1 {
@@ -534,20 +562,15 @@ footer {
     }
 
     .tagline {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
     }
 
     .date {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
     }
 
     h2 {
-        font-size: 2rem;
-    }
-
-    .nav-links {
-        gap: 1rem;
-        font-size: 0.9rem;
+        font-size: 1.8rem;
     }
 
     .venue-info {
