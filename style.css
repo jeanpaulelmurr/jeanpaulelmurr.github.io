@@ -170,6 +170,41 @@ h2 {
     letter-spacing: 1px;
 }
 
+/* Gallery Section */
+.gallery {
+    background: white;
+}
+
+.gallery-grid {
+    display: grid;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.gallery-item {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(196, 30, 58, 0.15);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(196, 30, 58, 0.25);
+}
+
+.gallery-item.featured {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
 /* Details Section */
 .details {
     background: #f9f9f9;
