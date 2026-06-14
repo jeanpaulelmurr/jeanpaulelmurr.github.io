@@ -14,7 +14,10 @@ let rsvpData = {};
 document.addEventListener('DOMContentLoaded', () => {
     const musicToggle = document.getElementById('musicToggle');
     const backgroundMusic = document.getElementById('backgroundMusic');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
 
+    // Music player functionality
     musicToggle.addEventListener('click', () => {
         if (backgroundMusic.paused) {
             backgroundMusic.play();
@@ -25,6 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
             musicToggle.textContent = '🎵 Play Music';
             musicToggle.style.opacity = '1';
         }
+    });
+
+    // Sidebar toggle functionality
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
+
+    // Close sidebar when a link is clicked
+    const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
     });
 });
 
