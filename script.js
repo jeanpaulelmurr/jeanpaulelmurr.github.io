@@ -18,30 +18,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
 
     // Music player functionality
-    musicToggle.addEventListener('click', () => {
-        if (backgroundMusic.paused) {
-            backgroundMusic.play();
-            musicToggle.textContent = '🎵 Music Playing';
-            musicToggle.style.opacity = '0.8';
-        } else {
-            backgroundMusic.pause();
-            musicToggle.textContent = '🎵 Play Music';
-            musicToggle.style.opacity = '1';
-        }
-    });
+    if (musicToggle && backgroundMusic) {
+        musicToggle.addEventListener('click', () => {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                musicToggle.textContent = 'Music Playing';
+                musicToggle.style.opacity = '0.8';
+            } else {
+                backgroundMusic.pause();
+                musicToggle.textContent = 'Play Music';
+                musicToggle.style.opacity = '1';
+            }
+        });
+    }
 
     // Sidebar toggle functionality
-    sidebarToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-    });
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+    }
 
     // Close sidebar when a link is clicked
-    const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
-    sidebarLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            sidebar.classList.remove('active');
+    if (sidebar) {
+        const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+            });
         });
-    });
+    }
 });
 
 // Check if guest is invited
@@ -64,7 +70,7 @@ function checkGuest() {
         resultDiv.classList.add('found');
         resultDiv.innerHTML = `
             <div style="padding: 1rem;">
-                <strong>✓ Welcome, ${foundGuest.name}!</strong><br>
+                <strong>Welcome, ${foundGuest.name}!</strong><br>
                 <small>You have ${foundGuest.invitees} ${foundGuest.invitees === 1 ? 'seat' : 'seats'}</small>
             </div>
         `;
@@ -73,7 +79,7 @@ function checkGuest() {
         resultDiv.classList.add('not-found');
         resultDiv.innerHTML = `
             <div style="padding: 1rem;">
-                <strong>✗ Not Found</strong><br>
+                <strong>Not Found</strong><br>
                 <small>We don't have your name on the guest list. Please contact us!</small>
             </div>
         `;
@@ -86,8 +92,8 @@ function rsvpResponse(response) {
     const guestName = document.getElementById('guestInput').value.trim();
 
     if (!guestName) {
-        messageDiv.textContent = '⚠️ Please check your invitation first!';
-        messageDiv.style.color = '#ff9800';
+        messageDiv.textContent = 'Please check your invitation first.';
+        messageDiv.style.color = '#bfa85b';
         return;
     }
 
@@ -96,8 +102,8 @@ function rsvpResponse(response) {
     );
 
     if (!foundGuest) {
-        messageDiv.textContent = '⚠️ Please enter a valid name from the guest list';
-        messageDiv.style.color = '#ff9800';
+        messageDiv.textContent = 'Please enter a valid name from the guest list.';
+        messageDiv.style.color = '#bfa85b';
         return;
     }
 
@@ -106,19 +112,19 @@ function rsvpResponse(response) {
     if (response === 'yes') {
         messageDiv.innerHTML = `
             <div style="padding: 1rem; font-weight: bold;">
-                ✓ Thank you for confirming!<br>
-                <small>We can't wait to celebrate with you and your ${foundGuest.invitees} ${foundGuest.invitees === 1 ? 'guest' : 'guests'}!</small>
+                Thank you for confirming!<br>
+                <small>We can't wait to celebrate with you and your ${foundGuest.invitees} ${foundGuest.invitees === 1 ? 'guest' : 'guests'}.</small>
             </div>
         `;
-        messageDiv.style.color = '#28a745';
+        messageDiv.style.color = '#2c3e50';
     } else {
         messageDiv.innerHTML = `
             <div style="padding: 1rem; font-weight: bold;">
-                ✗ We understand<br>
-                <small>We'll miss you at the celebration!</small>
+                We understand<br>
+                <small>We'll miss you at the celebration.</small>
             </div>
         `;
-        messageDiv.style.color = '#dc3545';
+        messageDiv.style.color = '#666666';
     }
 
     // Clear input after RSVP
