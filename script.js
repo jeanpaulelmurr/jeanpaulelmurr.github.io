@@ -12,10 +12,14 @@ let rsvpData = {};
 
 // Initialize music player
 document.addEventListener('DOMContentLoaded', () => {
+    // ensure page starts at top (avoid restored scroll)
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+
     const musicToggle = document.getElementById('musicToggle');
     const backgroundMusic = document.getElementById('backgroundMusic');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const sidebar = document.getElementById('sidebar');
+    const navToggle = document.getElementById('navToggle');
+    const navbar = document.querySelector('.navbar');
 
     // Music player functionality
     if (musicToggle && backgroundMusic) {
@@ -32,33 +36,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Sidebar toggle functionality
-    if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
+    // Mobile nav toggle
+    if (navToggle && navbar) {
+        navToggle.addEventListener('click', () => {
+            navbar.classList.toggle('nav-open');
         });
     }
 
-    // Close sidebar when a link is clicked
-    if (sidebar) {
-        const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                // smooth scroll to section with offset for fixed top elements
-                const href = link.getAttribute('href');
-                if (href && href.startsWith('#')) {
+    // Smooth scroll for all in-page anchors (handles offset for fixed navbar)
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (!href || href === '#') return;
+            if (href.startsWith('#')) {
+                const target = document.querySelector(href);
+                if (target) {
                     e.preventDefault();
-                    const target = document.querySelector(href);
-                    if (target) {
-                        const topOffset = document.querySelector('.navbar')?.offsetHeight || 0;
-                        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - topOffset - 16;
-                        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                    }
+                    const topOffset = document.querySelector('.navbar')?.offsetHeight || 0;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - topOffset - 16;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                    // close mobile nav if open
+                    navbar.classList.remove('nav-open');
                 }
-                sidebar.classList.remove('active');
-            });
+            }
         });
-    }
+    });
 });
 
 // Check if guest is invited
