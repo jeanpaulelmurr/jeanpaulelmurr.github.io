@@ -18,7 +18,7 @@ body {
     top: 0;
     height: 100vh;
     width: 60px;
-    background: linear-gradient(135deg, #c41e3a 0%, #8b1428 100%);
+    background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
     z-index: 200;
     transition: width 0.3s ease;
     display: flex;
@@ -84,13 +84,13 @@ body {
 
 /* Navigation */
 .navbar {
-    background: linear-gradient(135deg, #c41e3a 0%, #8b1428 100%);
+    background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
     color: white;
     padding: 1rem 0;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(44, 62, 80, 0.2);
 }
 
 .navbar .container {
@@ -114,6 +114,7 @@ body {
     color: white;
     text-decoration: none;
     transition: opacity 0.3s;
+    font-weight: 500;
 }
 
 .nav-links a:hover {
@@ -122,7 +123,7 @@ body {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, #c41e3a 0%, #8b1428 100%);
+    background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
     color: white;
     padding: 120px 20px;
     text-align: center;
@@ -156,7 +157,7 @@ body {
 
 .music-toggle {
     background: white;
-    color: #c41e3a;
+    color: #2c3e50;
     border: none;
     padding: 12px 24px;
     font-size: 1rem;
@@ -183,9 +184,9 @@ body {
     background: white;
     padding: 3rem;
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(196, 30, 58, 0.1);
+    box-shadow: 0 4px 20px rgba(44, 62, 80, 0.1);
     text-align: center;
-    border: 2px solid #c41e3a;
+    border: 2px solid #2c3e50;
 }
 
 .invitation-card h2 {
@@ -205,20 +206,20 @@ body {
 
 .invitation-card h3 {
     font-size: 2rem;
-    color: #c41e3a;
+    color: #2c3e50;
     margin: 1rem 0;
     font-weight: 300;
 }
 
 .and-text {
     font-size: 1.5rem;
-    color: #c41e3a;
+    color: #2c3e50;
     margin: 0.5rem 0 !important;
 }
 
 .and {
     font-size: 2rem;
-    color: #c41e3a;
+    color: #2c3e50;
     margin: 0.5rem 0;
 }
 
@@ -250,13 +251,13 @@ h2 {
 .gallery-item {
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 8px 30px rgba(196, 30, 58, 0.15);
+    box-shadow: 0 8px 30px rgba(44, 62, 80, 0.15);
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .gallery-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(196, 30, 58, 0.25);
+    box-shadow: 0 12px 40px rgba(44, 62, 80, 0.25);
 }
 
 .gallery-item.featured {
@@ -289,18 +290,18 @@ h2 {
     text-align: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     transition: transform 0.3s;
-    border-top: 4px solid #c41e3a;
+    border-top: 4px solid #2c3e50;
 }
 
 .detail-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 20px rgba(196, 30, 58, 0.2);
+    box-shadow: 0 4px 20px rgba(44, 62, 80, 0.2);
 }
 
 .detail-card h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
-    color: #c41e3a;
+    color: #2c3e50;
 }
 
 .detail-card p {
@@ -322,7 +323,7 @@ h2 {
 
 .venue-text h3 {
     font-size: 2rem;
-    color: #c41e3a;
+    color: #2c3e50;
     margin-bottom: 1rem;
     font-weight: 300;
 }
@@ -334,15 +335,8 @@ h2 {
     line-height: 1.8;
 }
 
-.map-placeholder {
-    background: #f0f0f0;
-    height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.map-container {
     border-radius: 10px;
-    color: #999;
-    font-size: 1.2rem;
 }
 
 /* Guest Checker */
@@ -363,19 +357,19 @@ h2 {
     flex: 1;
     min-width: 200px;
     padding: 12px 15px;
-    border: 2px solid #c41e3a;
+    border: 2px solid #2c3e50;
     border-radius: 5px;
     font-size: 1rem;
 }
 
 .guest-input:focus {
     outline: none;
-    border-color: #8b1428;
-    box-shadow: 0 0 5px rgba(196, 30, 58, 0.3);
+    border-color: #1a252f;
+    box-shadow: 0 0 5px rgba(44, 62, 80, 0.3);
 }
 
 .btn-primary {
-    background: #c41e3a;
+    background: #2c3e50;
     color: white;
     border: none;
     padding: 12px 30px;
@@ -387,7 +381,7 @@ h2 {
 }
 
 .btn-primary:hover {
-    background: #8b1428;
+    background: #1a252f;
 }
 
 .guest-result {
@@ -501,7 +495,7 @@ footer {
         left: 0;
         right: 0;
         flex-direction: column;
-        background: linear-gradient(135deg, #c41e3a 0%, #8b1428 100%);
+        background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
         padding: 1rem;
     }
 
