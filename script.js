@@ -44,6 +44,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Smooth scroll (delegated) for all in-page anchors (handles offset for fixed navbar)
+    // Use a custom animation so we can control duration (slower scroll).
+    function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function smoothScrollTo(targetY, duration = 900) {
+        const startY = window.pageYOffset;
+        const distance = targetY - startY;
+        let startTime = null;
+
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = easeInOutCubic(progress);
+            window.scrollTo(0, startY + distance * eased);
+            if (elapsed < duration) {
+                window.requestAnimationFrame(step);
+            }
+        }
+
+        window.requestAnimationFrame(step);
+    }
+
     document.addEventListener('click', (e) => {
         const link = e.target.closest && e.target.closest('a[href^="#"]');
         if (!link) return;
@@ -55,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 const topOffset = document.querySelector('.navbar')?.offsetHeight || 0;
                 const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - topOffset - 12;
-                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                smoothScrollTo(targetPosition, 200); // 200ms for a slightly slower scroll
                 // close mobile nav if open
                 navbar.classList.remove('nav-open');
             }
