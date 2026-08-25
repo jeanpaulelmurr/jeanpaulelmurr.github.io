@@ -130,7 +130,7 @@ function rsvpResponse(response) {
 
     if (!guestName) {
         messageDiv.textContent = 'Please check your invitation first.';
-        messageDiv.style.color = '#bfa85b';
+        messageDiv.style.color = '#9c8a4e';
         return;
     }
 
@@ -140,7 +140,7 @@ function rsvpResponse(response) {
 
     if (!foundGuest) {
         messageDiv.textContent = 'Please enter a valid name from the guest list.';
-        messageDiv.style.color = '#bfa85b';
+        messageDiv.style.color = '#9c8a4e';
         return;
     }
 
@@ -153,7 +153,7 @@ function rsvpResponse(response) {
                 <small>We can't wait to celebrate with you and your ${foundGuest.invitees} ${foundGuest.invitees === 1 ? 'guest' : 'guests'}.</small>
             </div>
         `;
-        messageDiv.style.color = '#2c3e50';
+        messageDiv.style.color = '#22462f';
     } else {
         messageDiv.innerHTML = `
             <div style="padding: 1rem; font-weight: bold;">
@@ -161,7 +161,7 @@ function rsvpResponse(response) {
                 <small>We'll miss you at the celebration.</small>
             </div>
         `;
-        messageDiv.style.color = '#666666';
+        messageDiv.style.color = '#63695a';
     }
 
     // Clear input after RSVP
