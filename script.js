@@ -16,24 +16,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
 
-    const musicToggle = document.getElementById('musicToggle');
     const backgroundMusic = document.getElementById('backgroundMusic');
     const navToggle = document.getElementById('navToggle');
     const navbar = document.querySelector('.navbar');
 
-    // Music player functionality
-    if (musicToggle && backgroundMusic) {
-        musicToggle.addEventListener('click', () => {
-            if (backgroundMusic.paused) {
-                backgroundMusic.play();
-                musicToggle.textContent = 'Music Playing';
-                musicToggle.style.opacity = '0.8';
-            } else {
-                backgroundMusic.pause();
-                musicToggle.textContent = 'Play Music';
-                musicToggle.style.opacity = '1';
-            }
-        });
+    // Autoplay background music. Most browsers block unmuted autoplay
+    // without a user gesture, so if it's blocked we start playback on
+    // the very first interaction the visitor makes with the page.
+    if (backgroundMusic) {
+        const startMusic = () => backgroundMusic.play().catch(() => {});
+
+        startMusic();
+
+        const resumeOnInteraction = () => {
+            if (backgroundMusic.paused) startMusic();
+            ['click', 'touchstart', 'keydown', 'scroll'].forEach(evt =>
+                document.removeEventListener(evt, resumeOnInteraction)
+            );
+        };
+
+        ['click', 'touchstart', 'keydown', 'scroll'].forEach(evt =>
+            document.addEventListener(evt, resumeOnInteraction, { once: true, passive: true })
+        );
     }
 
     // Mobile nav toggle
