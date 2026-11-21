@@ -4,13 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jean Paul & Vanessa - Wedding 2027</title>
+    <meta name="description" content="Jean Paul El Murr & Vanessa Mghames are getting married on July 17, 2027 at Chateau du Comte, Daraoun. Find your invitation and RSVP by June 1, 2027.">
+    <meta name="theme-color" content="#22462f">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.vanessaandjeanpaulelmurr.com/">
+    <meta property="og:title" content="Jean Paul & Vanessa - July 17, 2027">
+    <meta property="og:description" content="We're getting married! Find your invitation and RSVP by June 1, 2027.">
+    <meta property="og:image" content="https://www.vanessaandjeanpaulelmurr.com/images/og-preview.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M8 64V30a24 24 0 0 1 48 0v34z' fill='%2322462f'/%3E%3Ctext x='32' y='48' font-family='Georgia,serif' font-size='22' fill='%23fffcf5' text-anchor='middle'%3EJ%26amp;V%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Music Player -->
-    <audio id="backgroundMusic" preload="auto" loop>
+    <audio id="backgroundMusic" preload="metadata" loop>
+        <source src="music/o-sole-mio.m4a" type="audio/mp4">
         <source src="music/Instrumental - O Sole Mio.mp3" type="audio/mpeg">
     </audio>
+    <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false" data-i18n-aria="music.play" aria-label="Play music">
+        <span class="music-icon" aria-hidden="true">&#9835;</span>
+    </button>
 
     <!-- Navigation -->
     <nav class="navbar">
@@ -27,7 +44,7 @@
             </ul>
             <div class="nav-actions">
                 <button class="lang-toggle" id="langToggle" type="button" data-i18n="lang.toggle" data-i18n-aria="lang.toggleLabel">العربية</button>
-                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <button class="nav-toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -40,7 +57,7 @@
     <section id="home" class="hero">
         <div class="hero-content">
             <h1 data-i18n="hero.groom">Jean Paul El Murr</h1>
-            <p class="and">&</p>
+            <p class="and" data-i18n="common.and">&</p>
             <h1 data-i18n="hero.bride">Vanessa Mghames</h1>
             <p class="tagline" data-i18n="hero.tagline">are getting married</p>
             <p class="date" data-i18n="hero.date">July 17, 2027</p>
@@ -53,7 +70,7 @@
             <h2 data-i18n="story.title">Our Love Story</h2>
             <div class="gallery-grid">
                 <div class="gallery-item featured">
-                    <img src="images/j&v_engagement.JPG" alt="Jean Paul & Vanessa">
+                    <img src="images/engagement.jpg" width="900" height="1350" alt="Jean Paul & Vanessa">
                 </div>
             </div>
         </div>
@@ -66,7 +83,7 @@
                 <h2 data-i18n="inv.together">Together with their families</h2>
                 <p data-i18n="inv.request">request the honor of your presence at the wedding of</p>
                 <h3 data-i18n="hero.groom">Jean Paul El Murr</h3>
-                <p class="and-text">&</p>
+                <p class="and-text" data-i18n="common.and">&</p>
                 <h3 data-i18n="hero.bride">Vanessa Mghames</h3>
                 <p data-i18n-html="inv.when">Saturday, the seventeenth of July<br>Two thousand twenty-seven<br>at half past five in the evening</p>
                 <p><strong data-i18n-html="inv.venue">Chateau du Comte,<br>Daraoun</strong></p>
@@ -116,11 +133,11 @@
             <div class="venue-info">
                 <div class="venue-text">
                     <h3 data-i18n="venue.name">Chateau du Comte</h3>
-                    <p data-i18n="venue.text">Join us at Chateau du Comte, a stunning 400-year-old castle nestled in the hills of Daraoun, Harissa, for both our ceremony and celebration.</p>
+                    <p data-i18n="venue.text">Join us at Chateau du Comte, a stunning 400-year-old castle nestled in the hills of Daraoun, Harissa, for both our ceremony and celebration. Lovingly restored into a luxurious estate surrounded by gardens and sweeping mountain views, this historic venue will be the perfect setting for us to celebrate our love surrounded by family and friends.</p>
                     <a class="btn-calendar" id="directionsLink" href="#" target="_blank" rel="noopener" data-i18n="venue.directions">Get directions</a>
                 </div>
                 <div class="venue-map">
-                    <iframe class="map-container" src="https://www.google.com/maps?q=Chateau%20du%20Comte%20Daraoun&z=17&output=embed" width="100%" height="400" style="border:none;border-radius:10px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <iframe class="map-container" title="Map of Chateau du Comte, Daraoun" src="https://www.google.com/maps?q=Chateau%20du%20Comte%20Daraoun&z=17&output=embed" width="100%" height="400" style="border:none;border-radius:10px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>
@@ -196,15 +213,15 @@
     <section id="messages" class="messages">
         <div class="container">
             <h2 data-i18n="msg.title">Leave Us a Message</h2>
-            <p class="section-intro" data-i18n="msg.subtitle"></p>
+            <p class="section-intro" data-i18n="msg.subtitle">Share your wishes, a memory or a piece of advice. We will treasure every word.</p>
             <form id="messageForm" class="rsvp-card" novalidate>
                 <div class="field">
                     <label for="msgName" data-i18n="msg.name">Your name</label>
-                    <input type="text" id="msgName" class="form-input" maxlength="100" autocomplete="name">
+                    <input type="text" id="msgName" class="form-input" maxlength="100" autocomplete="name" required>
                 </div>
                 <div class="field">
                     <label for="msgText" data-i18n="msg.message">Your message</label>
-                    <textarea id="msgText" class="form-input" maxlength="2000" rows="5"></textarea>
+                    <textarea id="msgText" class="form-input" maxlength="2000" rows="5" required></textarea>
                 </div>
                 <button type="submit" class="btn-primary" id="msgSubmit" data-i18n="msg.submit">Send message</button>
                 <div id="msgStatus" class="form-status" role="status"></div>
@@ -216,18 +233,18 @@
     <section id="photos" class="photos">
         <div class="container">
             <h2 data-i18n="photos.title">Share Your Photos</h2>
-            <p class="section-intro" data-i18n="photos.subtitle"></p>
+            <p class="section-intro" data-i18n="photos.subtitle">Captured a beautiful moment? Upload your photos and videos and they will go straight to our wedding album.</p>
             <form id="photoForm" class="rsvp-card" novalidate>
                 <div class="field">
                     <label for="photoName" data-i18n="photos.name">Your name (optional)</label>
                     <input type="text" id="photoName" class="form-input" maxlength="100" autocomplete="name">
                 </div>
+                <input type="file" id="photoFiles" class="visually-hidden" accept="image/*,video/*" multiple>
                 <label class="file-drop" for="photoFiles">
                     <span class="file-drop-icon" aria-hidden="true">&#128247;</span>
                     <span data-i18n="photos.choose">Choose photos or videos</span>
                     <small id="photoSelected"></small>
                 </label>
-                <input type="file" id="photoFiles" class="visually-hidden" accept="image/*,video/*" multiple>
                 <button type="submit" class="btn-primary" id="photoSubmit" data-i18n="photos.upload">Upload</button>
                 <div class="progress" id="photoProgress" hidden><div class="progress-bar" id="photoProgressBar"></div></div>
                 <div id="photoStatus" class="form-status" role="status"></div>

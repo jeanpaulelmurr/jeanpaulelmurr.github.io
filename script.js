@@ -1,12 +1,15 @@
 const CONFIG = window.WEDDING_CONFIG;
 const GUESTS = window.GUESTS || [];
 
+// Scripts load at the end of <body>, so the DOM is ready. Translating right away
+// avoids a flash of English for visitors who chose Arabic.
+I18N.init();
+
 document.addEventListener('DOMContentLoaded', () => {
     // ensure page starts at top (avoid restored scroll)
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    window.scrollTo(0, 0);
+    if (!location.hash) window.scrollTo(0, 0);
 
-    I18N.init();
     initMusic();
     initNavigation();
     initLanguageToggle();
@@ -19,22 +22,44 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ---------- Music ---------- */
 
 function initMusic() {
-    const backgroundMusic = document.getElementById('backgroundMusic');
-    if (!backgroundMusic) return;
+    const music = document.getElementById('backgroundMusic');
+    const toggle = document.getElementById('musicToggle');
+    if (!music || !toggle) return;
 
-    // Most browsers block unmuted autoplay without a user gesture, so if it's
-    // blocked we start playback on the visitor's first interaction.
-    const startMusic = () => backgroundMusic.play().catch(() => {});
-    startMusic();
+    let pausedByUser = false;
 
-    const events = ['click', 'touchstart', 'keydown', 'scroll'];
-    const resumeOnInteraction = () => {
-        if (backgroundMusic.paused) startMusic();
-        events.forEach(evt => document.removeEventListener(evt, resumeOnInteraction));
+    const updateButton = () => {
+        const playing = !music.paused;
+        toggle.classList.toggle('playing', playing);
+        toggle.setAttribute('aria-pressed', String(playing));
+        toggle.dataset.i18nAria = playing ? 'music.pause' : 'music.play';
+        toggle.setAttribute('aria-label', I18N.t(toggle.dataset.i18nAria));
     };
-    events.forEach(evt =>
-        document.addEventListener(evt, resumeOnInteraction, { once: true, passive: true })
-    );
+    music.addEventListener('play', updateButton);
+    music.addEventListener('pause', updateButton);
+
+    toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (music.paused) {
+            pausedByUser = false;
+            music.play().catch(() => {});
+        } else {
+            pausedByUser = true;
+            music.pause();
+        }
+    });
+
+    // Browsers block autoplay with sound until the visitor interacts with the
+    // page (a tap, click or key press; scrolling doesn't count). Keep trying on
+    // each interaction until playback actually starts.
+    const events = ['pointerdown', 'touchend', 'keydown'];
+    const stopListening = () => events.forEach(evt => document.removeEventListener(evt, tryStart));
+    function tryStart() {
+        if (pausedByUser || !music.paused) { stopListening(); return; }
+        music.play().then(stopListening).catch(() => {});
+    }
+    events.forEach(evt => document.addEventListener(evt, tryStart, { passive: true }));
+    music.play().then(stopListening).catch(() => {});
 }
 
 /* ---------- Navigation ---------- */
@@ -42,38 +67,18 @@ function initMusic() {
 function initNavigation() {
     const navToggle = document.getElementById('navToggle');
     const navbar = document.querySelector('.navbar');
+    if (!navToggle || !navbar) return;
 
-    navToggle?.addEventListener('click', () => navbar.classList.toggle('nav-open'));
+    const setOpen = (open) => {
+        navbar.classList.toggle('nav-open', open);
+        navToggle.setAttribute('aria-expanded', String(open));
+    };
 
-    const easeInOutCubic = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    navToggle.addEventListener('click', () => setOpen(!navbar.classList.contains('nav-open')));
 
-    function smoothScrollTo(targetY, duration) {
-        const startY = window.pageYOffset;
-        const distance = targetY - startY;
-        let startTime = null;
-
-        function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-            const progress = Math.min((timestamp - startTime) / duration, 1);
-            window.scrollTo(0, startY + distance * easeInOutCubic(progress));
-            if (progress < 1) window.requestAnimationFrame(step);
-        }
-        window.requestAnimationFrame(step);
-    }
-
-    document.addEventListener('click', (e) => {
-        const link = e.target.closest && e.target.closest('a[href^="#"]');
-        if (!link) return;
-        const href = link.getAttribute('href');
-        if (!href || href === '#') return;
-        const target = document.querySelector(href);
-        if (!target) return;
-        e.preventDefault();
-        const topOffset = navbar?.offsetHeight || 0;
-        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - topOffset - 12;
-        smoothScrollTo(targetPosition, 200);
-        navbar?.classList.remove('nav-open');
-    });
+    // Smooth scrolling and the offset for the sticky navbar are handled in CSS
+    // (scroll-behavior + scroll-margin-top); just close the mobile menu.
+    navbar.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => setOpen(false)));
 }
 
 /* ---------- Language ---------- */
@@ -366,6 +371,19 @@ function initMessages() {
 
 /* ---------- Photos ---------- */
 
+// Some browsers leave file.type empty (e.g. iPhone HEIC photos on desktop).
+const EXTENSION_TYPES = {
+    jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif',
+    webp: 'image/webp', heic: 'image/heic', heif: 'image/heif',
+    mp4: 'video/mp4', mov: 'video/quicktime', m4v: 'video/x-m4v', webm: 'video/webm'
+};
+
+function fileMimeType(file) {
+    if (file.type) return file.type;
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    return EXTENSION_TYPES[ext] || 'application/octet-stream';
+}
+
 function readAsBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -437,7 +455,7 @@ function initPhotos() {
                     type: 'photo',
                     uploader: nameInput.value.trim(),
                     filename: file.name,
-                    mimeType: file.type || 'application/octet-stream',
+                    mimeType: fileMimeType(file),
                     data
                 });
                 uploaded++;

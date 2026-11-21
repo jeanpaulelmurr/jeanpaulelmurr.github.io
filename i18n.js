@@ -99,6 +99,9 @@ const TRANSLATIONS = {
         'photos.tooBig': '{file} is larger than {mb} MB and was skipped.',
         'photos.failed': '{file} could not be uploaded.',
 
+        'common.and': '&',
+        'music.play': 'Play music',
+        'music.pause': 'Pause music',
         'common.sending': 'Sending…',
         'error.generic': 'Something went wrong. Please try again in a moment.',
         'error.notConfigured': 'This feature isn’t available yet. Please check back soon.',
@@ -198,6 +201,9 @@ const TRANSLATIONS = {
         'photos.tooBig': 'حجم {file} يتجاوز {mb} ميغابايت ولم يتمّ تحميله.',
         'photos.failed': 'تعذّر تحميل {file}.',
 
+        'common.and': 'و',
+        'music.play': 'تشغيل الموسيقى',
+        'music.pause': 'إيقاف الموسيقى',
         'common.sending': 'جارٍ الإرسال…',
         'error.generic': 'حدث خطأ ما. يُرجى المحاولة مجددًا بعد قليل.',
         'error.notConfigured': 'هذه الخدمة غير متاحة بعد. يُرجى العودة قريبًا.',
