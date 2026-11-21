@@ -32,11 +32,17 @@ Google Apps Script. Guests don't need a Google account.
 5. **Connect the site.** Paste that URL into `appsScriptUrl` in `config.js`,
    then commit and push.
 
-The script creates three tabs on first use:
+The script creates these tabs on first use:
 
-- **RSVPs**: one row per guest, updated in place if they respond again
+- **RSVPs**: one row per guest with their latest answer, updated in place if they respond again
+- **RSVP history**: every response ever sent, so an earlier answer is never lost
 - **Messages**: guest messages
 - **Uploads**: who uploaded what, with links to the files in the Drive folder
+
+The backend also protects itself: it refuses photo uploads before
+`PHOTOS_OPEN_DATE` (keep it in sync with `photosOpenDate` in `config.js`),
+only accepts files whose contents really are photos or videos, and limits how
+many uploads and messages it takes per hour (see `LIMITS` in `Code.gs`).
 
 If you change `Code.gs` later, use **Deploy > Manage deployments > Edit >
 Version: New version** so the URL stays the same.

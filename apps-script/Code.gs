@@ -11,6 +11,17 @@ const UPLOAD_FOLDER_ID = 'PASTE_DRIVE_FOLDER_ID_HERE';
 
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 
+// Uploads are refused before this moment (Lebanon time). Keep in sync with
+// photosOpenDate in config.js.
+const PHOTOS_OPEN_DATE = new Date('2027-07-01T00:00:00+03:00');
+
+// Anti-spam limits, shared by everyone using the site.
+const LIMITS = {
+  photosPerHour: 400,                       // number of files
+  photoBytesPerDay: 4 * 1024 * 1024 * 1024, // 4 GB per day (Drive's free plan is 15 GB)
+  messagesPerHour: 60
+};
+
 function doGet() {
   return json_({ ok: true, service: 'wedding-backend' });
 }
@@ -48,8 +59,12 @@ function saveRsvp_(d) {
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
-    const sheet = sheet_('RSVPs', ['Updated at', 'Guest ID', 'Name', 'Seats invited', 'Attending', 'Number attending', 'Note', 'Language']);
-    // One row per guest: update it if they respond again.
+    const headers = ['Updated at', 'Guest ID', 'Name', 'Seats invited', 'Attending', 'Number attending', 'Note', 'Language'];
+    // Every response is kept here, so an earlier answer is never lost.
+    sheet_('RSVP history', headers).appendRow(row);
+
+    const sheet = sheet_('RSVPs', headers);
+    // One row per guest with their latest answer: update it if they respond again.
     const last = sheet.getLastRow();
     if (last > 1) {
       const ids = sheet.getRange(2, 2, last - 1, 1).getValues();
@@ -70,18 +85,27 @@ function saveMessage_(d) {
   const name = clean_(d.name, 100);
   const message = clean_(d.message, 2000);
   if (!name || !message) throw new Error('Missing name or message');
+  takeQuota_('messages', LIMITS.messagesPerHour, 0, 0);
   sheet_('Messages', ['Received at', 'Name', 'Message', 'Language'])
     .appendRow([new Date(), name, message, clean_(d.lang, 5)]);
 }
 
 function savePhoto_(d) {
-  const mime = String(d.mimeType || '');
-  if (!/^(image|video)\//.test(mime)) throw new Error('Only photos and videos are accepted');
+  if (new Date() < PHOTOS_OPEN_DATE) throw new Error('Photo uploads are not open yet');
   const bytes = Utilities.base64Decode(String(d.data || ''));
   if (!bytes.length || bytes.length > MAX_UPLOAD_BYTES) throw new Error('File is empty or too large');
 
+  // Check the file's actual contents rather than trusting the type the browser sent.
+  const type = detectMediaType_(bytes);
+  if (!type) throw new Error('Only photos and videos are accepted');
+  takeQuota_('photos', LIMITS.photosPerHour, bytes.length, LIMITS.photoBytesPerDay);
+
   const uploader = clean_(d.uploader, 60).replace(/^'/, '') || 'Guest';
-  const original = String(d.filename || 'photo').replace(/[\\/:*?"<>|]/g, '_').slice(-100);
+  // Keep the guest's file name but always end it with the real extension.
+  const base = String(d.filename || 'photo').replace(/\.[^.]*$/, '')
+    .replace(/[\\/:*?"<>|]/g, '_').slice(-90) || 'photo';
+  const original = base + '.' + type.ext;
+  const mime = type.mime;
   const stamp = Utilities.formatDate(new Date(), 'Asia/Beirut', 'yyyy-MM-dd_HH-mm-ss');
   const filename = stamp + ' - ' + uploader + ' - ' + original;
 
@@ -93,6 +117,61 @@ function savePhoto_(d) {
 }
 
 /* ---------- helpers ---------- */
+
+// Identify photos and videos from their first bytes. Returns {mime, ext} or null.
+function detectMediaType_(bytes) {
+  const b = i => (i < bytes.length ? bytes[i] & 0xff : -1);
+  const ascii = (start, len) => {
+    let s = '';
+    for (let i = start; i < start + len; i++) s += String.fromCharCode(b(i));
+    return s;
+  };
+
+  if (b(0) === 0xff && b(1) === 0xd8 && b(2) === 0xff) return { mime: 'image/jpeg', ext: 'jpg' };
+  if (ascii(0, 8) === '\x89PNG\r\n\x1a\n') return { mime: 'image/png', ext: 'png' };
+  if (ascii(0, 4) === 'GIF8') return { mime: 'image/gif', ext: 'gif' };
+  if (ascii(0, 4) === 'RIFF' && ascii(8, 4) === 'WEBP') return { mime: 'image/webp', ext: 'webp' };
+  if (b(0) === 0x1a && b(1) === 0x45 && b(2) === 0xdf && b(3) === 0xa3) return { mime: 'video/webm', ext: 'webm' };
+
+  // ISO media files (iPhone HEIC photos, MP4 and MOV videos) have "ftyp" at byte 4.
+  if (ascii(4, 4) === 'ftyp') {
+    const brand = ascii(8, 4);
+    if (/^(heic|heix|hevc|hevx|heim|heis)$/.test(brand)) return { mime: 'image/heic', ext: 'heic' };
+    if (/^(mif1|msf1)$/.test(brand)) return { mime: 'image/heif', ext: 'heif' };
+    if (brand === 'avif') return { mime: 'image/avif', ext: 'avif' };
+    if (brand === 'qt  ') return { mime: 'video/quicktime', ext: 'mov' };
+    if (/^M4V/.test(brand)) return { mime: 'video/x-m4v', ext: 'm4v' };
+    if (/^(isom|iso\d|mp41|mp42|avc1|dash|3gp\d|3g2\w|MSNV|f4v )$/.test(brand)) return { mime: 'video/mp4', ext: 'mp4' };
+  }
+  return null;
+}
+
+// Count a request against a shared hourly limit (and optional daily byte limit).
+// Throws when a limit is reached so floods can't fill the sheet or Drive.
+function takeQuota_(kind, perHour, bytes, bytesPerDay) {
+  const now = new Date();
+  const hourKey = 'quota:' + kind + ':' + Utilities.formatDate(now, 'Asia/Beirut', 'yyyyMMddHH');
+  const dayKey = 'quota:' + kind + ':bytes:' + Utilities.formatDate(now, 'Asia/Beirut', 'yyyyMMdd');
+  const props = PropertiesService.getScriptProperties();
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const count = Number(props.getProperty(hourKey) || 0);
+    const used = Number(props.getProperty(dayKey) || 0);
+    if (count >= perHour) throw new Error('Too many requests, please try again later');
+    if (bytesPerDay && used + bytes > bytesPerDay) throw new Error('Daily upload limit reached, please try again tomorrow');
+    if (count === 0) {
+      // New hour: forget the counters from earlier hours and days.
+      props.getKeys().forEach(k => {
+        if (k.indexOf('quota:' + kind + ':') === 0 && k !== hourKey && k !== dayKey) props.deleteProperty(k);
+      });
+    }
+    props.setProperty(hourKey, String(count + 1));
+    if (bytesPerDay) props.setProperty(dayKey, String(used + bytes));
+  } finally {
+    lock.releaseLock();
+  }
+}
 
 function sheet_(name, headers) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
