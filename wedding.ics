@@ -1,0 +1,23 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Jean Paul & Vanessa//Wedding//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:jp-vanessa-wedding-20270717@vanessaandjeanpaulelmurr.com
+DTSTAMP:20261121T000000Z
+DTSTART:20270717T143000Z
+DTEND:20270717T220000Z
+SUMMARY:Wedding of Jean Paul & Vanessa
+LOCATION:Chateau du Comte\, Daraoun\, Lebanon
+DESCRIPTION:Ceremony & reception at Chateau du Comte\, Daraoun.\nDirections
+ : https://www.google.com/maps/search/?api=1&query=Chateau%20du%20Comte%20Da
+ raoun\nhttps://www.vanessaandjeanpaulelmurr.com
+URL:https://www.vanessaandjeanpaulelmurr.com
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Wedding of Jean Paul & Vanessa tomorrow
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+END:VCALENDAR

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,43 +12,45 @@
         <source src="music/Instrumental - O Sole Mio.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- (Sidebar removed) -->
-
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
-            <div class="logo">Our Wedding</div>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <div class="logo" data-i18n="nav.logo">Our Wedding</div>
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#gallery">Our Story</a></li>
-                <li><a href="#details">Invitation Details</a></li>
-                <li><a href="#venue">Venue</a></li>
-                <li><a href="#guests">Guests</a></li>
-                <li><a href="#rsvp">RSVP</a></li>
+                <li><a href="#home" data-i18n="nav.home">Home</a></li>
+                <li><a href="#gallery" data-i18n="nav.story">Our Story</a></li>
+                <li><a href="#details" data-i18n="nav.details">Details</a></li>
+                <li><a href="#venue" data-i18n="nav.venue">Venue</a></li>
+                <li><a href="#rsvp" data-i18n="nav.rsvp">RSVP</a></li>
+                <li><a href="#messages" data-i18n="nav.messages">Messages</a></li>
+                <li><a href="#photos" data-i18n="nav.photos">Photos</a></li>
             </ul>
+            <div class="nav-actions">
+                <button class="lang-toggle" id="langToggle" type="button" data-i18n="lang.toggle" data-i18n-aria="lang.toggleLabel">العربية</button>
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1>Jean Paul El Murr</h1>
+            <h1 data-i18n="hero.groom">Jean Paul El Murr</h1>
             <p class="and">&</p>
-            <h1>Vanessa Mghames</h1>
-            <p class="tagline">are getting married</p>
-            <p class="date">July 17, 2027</p>
+            <h1 data-i18n="hero.bride">Vanessa Mghames</h1>
+            <p class="tagline" data-i18n="hero.tagline">are getting married</p>
+            <p class="date" data-i18n="hero.date">July 17, 2027</p>
         </div>
     </section>
 
     <!-- Photo Gallery Section -->
     <section id="gallery" class="gallery">
         <div class="container">
-            <h2>Our Love Story</h2>
+            <h2 data-i18n="story.title">Our Love Story</h2>
             <div class="gallery-grid">
                 <div class="gallery-item featured">
                     <img src="images/j&v_engagement.JPG" alt="Jean Paul & Vanessa">
@@ -61,14 +63,15 @@
     <section id="invitation" class="invitation">
         <div class="container">
             <div class="invitation-card">
-                <h2>Together with their families</h2>
-                <p>request the honor of your presence at the wedding of</p>
-                <h3>Jean Paul El Murr</h3>
+                <h2 data-i18n="inv.together">Together with their families</h2>
+                <p data-i18n="inv.request">request the honor of your presence at the wedding of</p>
+                <h3 data-i18n="hero.groom">Jean Paul El Murr</h3>
                 <p class="and-text">&</p>
-                <h3>Vanessa Mghames</h3>
-                <p>Saturday, the seventeenth of July<br>Two thousand twenty-seven<br>at half past five in the evening</p>
-                <p><strong>Chateau du Comte,<br>Daraoun</strong></p>
-                <p style="margin-top: 2rem; font-style: italic;">Reception to follow</p>
+                <h3 data-i18n="hero.bride">Vanessa Mghames</h3>
+                <p data-i18n-html="inv.when">Saturday, the seventeenth of July<br>Two thousand twenty-seven<br>at half past five in the evening</p>
+                <p><strong data-i18n-html="inv.venue">Chateau du Comte,<br>Daraoun</strong></p>
+                <p class="reception" data-i18n="inv.reception">Reception to follow</p>
+                <p class="rsvp-by" data-i18n="inv.rsvpBy">Kindly respond by June 1, 2027</p>
             </div>
         </div>
     </section>
@@ -76,23 +79,31 @@
     <!-- Event Details -->
     <section id="details" class="details">
         <div class="container">
-            <h2>Wedding Details</h2>
+            <h2 data-i18n="details.title">Wedding Details</h2>
             <div class="details-grid">
                 <div class="detail-card">
-                    <h3>Date</h3>
-                    <p>Saturday, July 17, 2027</p>
+                    <h3 data-i18n="details.date">Date</h3>
+                    <p data-i18n="details.dateVal">Saturday, July 17, 2027</p>
                 </div>
                 <div class="detail-card">
-                    <h3>Time</h3>
-                    <p>5:30 PM</p>
+                    <h3 data-i18n="details.time">Time</h3>
+                    <p data-i18n="details.timeVal">5:30 PM</p>
                 </div>
                 <div class="detail-card">
-                    <h3>Location</h3>
-                    <p>Chateau du Comte,<br>Daraoun</p>
+                    <h3 data-i18n="details.location">Location</h3>
+                    <p data-i18n-html="details.locationVal">Chateau du Comte,<br>Daraoun</p>
                 </div>
                 <div class="detail-card">
-                    <h3>Celebration</h3>
-                    <p>Ceremony & Reception</p>
+                    <h3 data-i18n="details.celebration">Celebration</h3>
+                    <p data-i18n="details.celebrationVal">Ceremony & Reception</p>
+                </div>
+            </div>
+
+            <div class="calendar-box">
+                <h3 data-i18n="cal.title">Save the date</h3>
+                <div class="calendar-buttons">
+                    <a class="btn-calendar" id="googleCalLink" href="#" target="_blank" rel="noopener" data-i18n="cal.google">Google Calendar</a>
+                    <a class="btn-calendar" href="wedding.ics" data-i18n="cal.apple">Apple Calendar</a>
                 </div>
             </div>
         </div>
@@ -101,11 +112,12 @@
     <!-- Venue Information -->
     <section id="venue" class="venue">
         <div class="container">
-            <h2>The Venue</h2>
+            <h2 data-i18n="venue.title">The Venue</h2>
             <div class="venue-info">
                 <div class="venue-text">
-                    <h3>Chateau du Comte</h3>
-                    <p>Join us at Chateau du Comte, a stunning 400-year-old castle nestled in the hills of Daraoun, Harissa, for both our ceremony and celebration. Lovingly restored into a luxurious estate surrounded by gardens and sweeping mountain views, this historic venue will be the perfect setting for us to celebrate our love surrounded by family and friends.</p>
+                    <h3 data-i18n="venue.name">Chateau du Comte</h3>
+                    <p data-i18n="venue.text">Join us at Chateau du Comte, a stunning 400-year-old castle nestled in the hills of Daraoun, Harissa, for both our ceremony and celebration.</p>
+                    <a class="btn-calendar" id="directionsLink" href="#" target="_blank" rel="noopener" data-i18n="venue.directions">Get directions</a>
                 </div>
                 <div class="venue-map">
                     <iframe class="map-container" src="https://www.google.com/maps?q=Chateau%20du%20Comte%20Daraoun&z=17&output=embed" width="100%" height="400" style="border:none;border-radius:10px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -114,42 +126,125 @@
         </div>
     </section>
 
-    <!-- Guest List Checker -->
-    <section id="guests" class="guests">
+    <!-- RSVP Section -->
+    <section id="rsvp" class="rsvp">
         <div class="container">
-            <h2>Check Your Invitation</h2>
-            <div class="guest-checker">
-                <input 
-                    type="text" 
-                    id="guestInput" 
-                    placeholder="Enter your name..."
+            <h2 data-i18n="rsvp.title">Confirm Your Attendance</h2>
+            <p class="section-intro" data-i18n="rsvp.subtitle">Search for your name to find your invitation.</p>
+            <p class="deadline-badge" data-i18n="rsvp.deadline">Kindly respond by June 1, 2027</p>
+
+            <div id="rsvpClosed" class="notice" hidden data-i18n="rsvp.closed"></div>
+
+            <div id="rsvpSearch" class="guest-search">
+                <input
+                    type="search"
+                    id="guestInput"
                     class="guest-input"
+                    autocomplete="off"
+                    data-i18n-placeholder="rsvp.placeholder"
+                    data-i18n-aria="rsvp.searchLabel"
+                    aria-controls="guestResults"
                 >
-                <button class="btn-primary" onclick="checkGuest()">Check</button>
-                <div id="guestResult" class="guest-result"></div>
+                <ul id="guestResults" class="guest-results"></ul>
+                <p id="guestNoResults" class="hint" hidden data-i18n="rsvp.noResults"></p>
+            </div>
+
+            <form id="rsvpForm" class="rsvp-card" hidden novalidate>
+                <h3 id="rsvpWelcome"></h3>
+                <p id="rsvpReserved"></p>
+                <p id="rsvpPrevious" class="hint" hidden data-i18n="rsvp.previous"></p>
+
+                <fieldset class="rsvp-choice">
+                    <legend data-i18n="rsvp.question">Will you be joining us?</legend>
+                    <label class="choice">
+                        <input type="radio" name="attending" value="yes">
+                        <span data-i18n="rsvp.accept">Joyfully accept</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="attending" value="no">
+                        <span data-i18n="rsvp.decline">Regretfully decline</span>
+                    </label>
+                </fieldset>
+
+                <div id="rsvpCountWrap" class="field" hidden>
+                    <label for="rsvpCount" data-i18n="rsvp.howMany">How many of you will attend?</label>
+                    <select id="rsvpCount" class="form-input"></select>
+                </div>
+
+                <div class="field">
+                    <label for="rsvpNote" data-i18n="rsvp.note">Anything we should know? (optional)</label>
+                    <textarea id="rsvpNote" class="form-input" maxlength="500" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary" id="rsvpSubmit" data-i18n="rsvp.submit">Send my response</button>
+                <div id="rsvpStatus" class="form-status" role="status"></div>
+                <button type="button" class="btn-link" id="rsvpChange" data-i18n="rsvp.change">Not you? Search again</button>
+            </form>
+
+            <div id="rsvpDone" class="rsvp-card rsvp-done" hidden>
+                <p id="rsvpThanks" class="thanks" role="status"></p>
+                <div id="rsvpDoneCalendar" class="calendar-buttons">
+                    <a class="btn-calendar" data-calendar-google href="#" target="_blank" rel="noopener" data-i18n="cal.google">Google Calendar</a>
+                    <a class="btn-calendar" href="wedding.ics" data-i18n="cal.apple">Apple Calendar</a>
+                </div>
+                <button type="button" class="btn-link" id="rsvpUpdate" data-i18n="rsvp.update">Change my response</button>
             </div>
         </div>
     </section>
 
-    <!-- RSVP Section -->
-    <section id="rsvp" class="rsvp">
+    <!-- Messages Section -->
+    <section id="messages" class="messages">
         <div class="container">
-            <h2>Confirm Your Attendance</h2>
-            <p>Will you be able to join us?</p>
-            <div class="rsvp-buttons">
-                <button class="btn-yes" onclick="rsvpResponse('yes')">Yes, I'll Attend</button>
-                <button class="btn-no" onclick="rsvpResponse('no')">Can't Attend</button>
-            </div>
-            <div id="rsvpMessage" class="rsvp-message"></div>
+            <h2 data-i18n="msg.title">Leave Us a Message</h2>
+            <p class="section-intro" data-i18n="msg.subtitle"></p>
+            <form id="messageForm" class="rsvp-card" novalidate>
+                <div class="field">
+                    <label for="msgName" data-i18n="msg.name">Your name</label>
+                    <input type="text" id="msgName" class="form-input" maxlength="100" autocomplete="name">
+                </div>
+                <div class="field">
+                    <label for="msgText" data-i18n="msg.message">Your message</label>
+                    <textarea id="msgText" class="form-input" maxlength="2000" rows="5"></textarea>
+                </div>
+                <button type="submit" class="btn-primary" id="msgSubmit" data-i18n="msg.submit">Send message</button>
+                <div id="msgStatus" class="form-status" role="status"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Photos Section -->
+    <section id="photos" class="photos">
+        <div class="container">
+            <h2 data-i18n="photos.title">Share Your Photos</h2>
+            <p class="section-intro" data-i18n="photos.subtitle"></p>
+            <form id="photoForm" class="rsvp-card" novalidate>
+                <div class="field">
+                    <label for="photoName" data-i18n="photos.name">Your name (optional)</label>
+                    <input type="text" id="photoName" class="form-input" maxlength="100" autocomplete="name">
+                </div>
+                <label class="file-drop" for="photoFiles">
+                    <span class="file-drop-icon" aria-hidden="true">&#128247;</span>
+                    <span data-i18n="photos.choose">Choose photos or videos</span>
+                    <small id="photoSelected"></small>
+                </label>
+                <input type="file" id="photoFiles" class="visually-hidden" accept="image/*,video/*" multiple>
+                <button type="submit" class="btn-primary" id="photoSubmit" data-i18n="photos.upload">Upload</button>
+                <div class="progress" id="photoProgress" hidden><div class="progress-bar" id="photoProgressBar"></div></div>
+                <div id="photoStatus" class="form-status" role="status"></div>
+                <ul id="photoErrors" class="photo-errors"></ul>
+            </form>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2027 Jean Paul El Murr & Vanessa Mghames. All rights reserved.</p>
-        <p style="margin-top: 0.5rem; opacity: 0.8; font-size: 0.9rem;">Made with love</p>
+        <p data-i18n="footer.rights">&copy; 2027 Jean Paul El Murr & Vanessa Mghames. All rights reserved.</p>
+        <p class="footer-love" data-i18n="footer.love">Made with love</p>
     </footer>
 
+    <script src="config.js"></script>
+    <script src="guests.js"></script>
+    <script src="i18n.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
