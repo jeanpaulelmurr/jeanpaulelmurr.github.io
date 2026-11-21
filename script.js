@@ -16,8 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
     initCalendarLinks();
     initRsvp();
     initMessages();
+    initPhotoVisibility();
     initPhotos();
+    Tour.init();
 });
+
+function initPhotoVisibility() {
+    const open = new Date() >= new Date(CONFIG.photosOpenDate)
+        || new URLSearchParams(location.search).has('photos');
+    document.getElementById('photos').hidden = !open;
+    document.getElementById('photosNavItem').hidden = !open;
+}
 
 /* ---------- Music ---------- */
 
@@ -198,7 +207,8 @@ function initRsvp() {
     const reserved = document.getElementById('rsvpReserved');
     const previous = document.getElementById('rsvpPrevious');
     const countWrap = document.getElementById('rsvpCountWrap');
-    const countSelect = document.getElementById('rsvpCount');
+    const countOptions = document.getElementById('rsvpCount');
+    const countLabel = document.getElementById('rsvpCountLabel');
     const note = document.getElementById('rsvpNote');
     const submit = document.getElementById('rsvpSubmit');
     const status = document.getElementById('rsvpStatus');
@@ -247,12 +257,21 @@ function initRsvp() {
         I18N.set(welcome, 'rsvp.welcome', { name: g.name });
         I18N.set(reserved, 'rsvp.reserved', { seats: seatsVar(g.seats) });
 
-        countSelect.innerHTML = '';
-        for (let i = g.seats; i >= 1; i--) {
-            const opt = document.createElement('option');
-            opt.value = String(i);
-            opt.textContent = String(i);
-            countSelect.appendChild(opt);
+        // One button per possible number of attendees, 1 up to the seats reserved.
+        I18N.set(countLabel, 'rsvp.howMany', { max: g.seats });
+        countOptions.innerHTML = '';
+        for (let i = 1; i <= g.seats; i++) {
+            const label = document.createElement('label');
+            label.className = 'count-option';
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'count';
+            radio.value = String(i);
+            radio.addEventListener('change', () => clearStatus(status));
+            const span = document.createElement('span');
+            span.textContent = String(i);
+            label.append(radio, span);
+            countOptions.appendChild(label);
         }
         countWrap.hidden = true;
 
@@ -262,7 +281,8 @@ function initRsvp() {
             form.querySelector(`input[name="attending"][value="${saved.attending}"]`).checked = true;
             if (saved.attending === 'yes') {
                 countWrap.hidden = g.seats <= 1;
-                countSelect.value = String(saved.count);
+                const prev = countOptions.querySelector(`input[value="${saved.count}"]`);
+                if (prev) prev.checked = true;
             }
             note.value = saved.note || '';
         }
@@ -301,7 +321,19 @@ function initRsvp() {
             return;
         }
         const attending = choice.value;
-        const count = attending === 'yes' ? Number(countSelect.value || 1) : 0;
+        let count = 0;
+        if (attending === 'yes') {
+            if (selected.seats === 1) {
+                count = 1;
+            } else {
+                const picked = countOptions.querySelector('input[name="count"]:checked');
+                if (!picked) {
+                    setStatus(status, 'rsvp.chooseCount', { max: selected.seats }, 'error');
+                    return;
+                }
+                count = Number(picked.value);
+            }
+        }
         const payload = {
             type: 'rsvp',
             guestId: selected.id,

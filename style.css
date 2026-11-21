@@ -753,6 +753,64 @@ h2::after {
     box-shadow: 0 0 0 3px rgba(34, 70, 47, 0.25);
 }
 
+.rsvp-count {
+    border: none;
+    margin: 0.5rem 0 1.4rem;
+}
+
+.rsvp-count legend {
+    width: 100%;
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+}
+
+.count-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+}
+
+.count-option {
+    position: relative;
+    cursor: pointer;
+}
+
+.count-option input {
+    position: absolute;
+    opacity: 0;
+}
+
+.count-option span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid var(--stone-dark);
+    background: white;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--primary);
+    transition: all 0.2s;
+}
+
+.count-option:hover span {
+    border-color: var(--primary);
+}
+
+.count-option input:checked + span {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.count-option input:focus-visible + span {
+    box-shadow: 0 0 0 3px rgba(34, 70, 47, 0.3);
+}
+
 .field {
     text-align: start;
     margin-bottom: 1.2rem;
@@ -891,6 +949,145 @@ textarea.form-input {
 .lang-toggle:hover {
     background: white;
     color: var(--primary);
+}
+
+.help-toggle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.help-toggle:hover {
+    background: white;
+    color: var(--primary);
+}
+
+/* Guided tour */
+.tour {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+}
+
+.tour.tour-welcome {
+    background: rgba(10, 22, 14, 0.65);
+}
+
+.tour-spotlight {
+    position: fixed;
+    border-radius: 14px;
+    box-shadow:
+        0 0 0 3px var(--accent),
+        0 0 0 9999px rgba(10, 22, 14, 0.65);
+    pointer-events: none;
+}
+
+.tour-card {
+    position: fixed;
+    width: min(360px, calc(100vw - 24px));
+    background: var(--marble);
+    color: var(--text);
+    border-top: 4px solid var(--primary);
+    border-radius: 18px 18px 10px 10px;
+    padding: 1.4rem 1.4rem 1.1rem;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+}
+
+.tour-welcome .tour-card {
+    text-align: center;
+    border-radius: 120px 120px 12px 12px;
+    padding-top: 2.4rem;
+}
+
+.tour-step {
+    color: var(--accent);
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-bottom: 0.2rem;
+}
+
+.tour-title {
+    color: var(--primary);
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+}
+
+.tour-text {
+    font-size: 1.05rem;
+    color: var(--text);
+}
+
+.tour-lang {
+    margin-top: 0.8rem;
+    background: none;
+    border: 1px solid var(--stone-dark);
+    border-radius: 999px;
+    padding: 0.25rem 1rem;
+    font-family: 'Noto Naskh Arabic', 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.95rem;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+[dir="rtl"] .tour-lang {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.tour-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.1rem;
+    flex-wrap: wrap;
+}
+
+.tour-welcome .tour-actions {
+    flex-direction: column-reverse;
+}
+
+.tour-nav {
+    display: flex;
+    gap: 0.5rem;
+    margin-inline-start: auto;
+}
+
+.tour-welcome .tour-nav {
+    margin: 0;
+}
+
+.tour-skip,
+.tour-back {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 0.5rem 0.25rem;
+}
+
+.tour-skip {
+    text-decoration: underline;
+}
+
+.tour-back {
+    border: 1px solid var(--stone-dark);
+    border-radius: 30px 30px 5px 5px;
+    padding: 0.5rem 1rem;
+}
+
+.tour-next {
+    padding: 0.6rem 1.4rem;
 }
 
 /* Arabic / RTL */

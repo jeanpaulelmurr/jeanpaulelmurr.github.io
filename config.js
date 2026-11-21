@@ -7,6 +7,10 @@ window.WEDDING_CONFIG = {
     // Guests can RSVP until the end of this day (Lebanon time).
     rsvpDeadline: '2027-06-01T23:59:59+03:00',
 
+    // The photo upload section stays hidden until this moment (Lebanon time).
+    // Add ?photos to the URL to preview it before then.
+    photosOpenDate: '2027-07-01T00:00:00+03:00',
+
     // Maximum size of a single uploaded photo/video, in MB.
     maxUploadMB: 20,
 

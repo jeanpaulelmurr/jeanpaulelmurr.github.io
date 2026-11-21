@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jean Paul & Vanessa - Wedding 2027</title>
-    <meta name="description" content="Jean Paul El Murr & Vanessa Mghames are getting married on July 17, 2027 at Chateau du Comte, Daraoun. Find your invitation and RSVP by June 1, 2027.">
+    <meta name="description" content="Jean Paul El Murr & Vanessa Mghames are getting married on 17.07.2027 at Chateau du Comte, Daraoun. Find your invitation and RSVP by 01.06.2027.">
     <meta name="theme-color" content="#22462f">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.vanessaandjeanpaulelmurr.com/">
-    <meta property="og:title" content="Jean Paul & Vanessa - July 17, 2027">
-    <meta property="og:description" content="We're getting married! Find your invitation and RSVP by June 1, 2027.">
+    <meta property="og:title" content="Jean Paul & Vanessa - 17.07.2027">
+    <meta property="og:description" content="We're getting married! Find your invitation and RSVP by 01.06.2027.">
     <meta property="og:image" content="https://www.vanessaandjeanpaulelmurr.com/images/og-preview.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -40,9 +40,10 @@
                 <li><a href="#venue" data-i18n="nav.venue">Venue</a></li>
                 <li><a href="#rsvp" data-i18n="nav.rsvp">RSVP</a></li>
                 <li><a href="#messages" data-i18n="nav.messages">Messages</a></li>
-                <li><a href="#photos" data-i18n="nav.photos">Photos</a></li>
+                <li id="photosNavItem" hidden><a href="#photos" data-i18n="nav.photos">Photos</a></li>
             </ul>
             <div class="nav-actions">
+                <button class="help-toggle" id="tourStart" type="button" data-i18n-aria="tour.open" aria-label="Show the site guide">?</button>
                 <button class="lang-toggle" id="langToggle" type="button" data-i18n="lang.toggle" data-i18n-aria="lang.toggleLabel">العربية</button>
                 <button class="nav-toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false">
                     <span></span>
@@ -60,7 +61,7 @@
             <p class="and" data-i18n="common.and">&</p>
             <h1 data-i18n="hero.bride">Vanessa Mghames</h1>
             <p class="tagline" data-i18n="hero.tagline">are getting married</p>
-            <p class="date" data-i18n="hero.date">July 17, 2027</p>
+            <p class="date" data-i18n="hero.date">17.07.2027</p>
         </div>
     </section>
 
@@ -85,10 +86,10 @@
                 <h3 data-i18n="hero.groom">Jean Paul El Murr</h3>
                 <p class="and-text" data-i18n="common.and">&</p>
                 <h3 data-i18n="hero.bride">Vanessa Mghames</h3>
-                <p data-i18n-html="inv.when">Saturday, the seventeenth of July<br>Two thousand twenty-seven<br>at half past five in the evening</p>
+                <p data-i18n-html="inv.when">17.07.2027<br>at 5:30 PM</p>
                 <p><strong data-i18n-html="inv.venue">Chateau du Comte,<br>Daraoun</strong></p>
                 <p class="reception" data-i18n="inv.reception">Reception to follow</p>
-                <p class="rsvp-by" data-i18n="inv.rsvpBy">Kindly respond by June 1, 2027</p>
+                <p class="rsvp-by" data-i18n="inv.rsvpBy">Kindly respond by 01.06.2027</p>
             </div>
         </div>
     </section>
@@ -100,7 +101,7 @@
             <div class="details-grid">
                 <div class="detail-card">
                     <h3 data-i18n="details.date">Date</h3>
-                    <p data-i18n="details.dateVal">Saturday, July 17, 2027</p>
+                    <p data-i18n="details.dateVal">17.07.2027</p>
                 </div>
                 <div class="detail-card">
                     <h3 data-i18n="details.time">Time</h3>
@@ -148,7 +149,7 @@
         <div class="container">
             <h2 data-i18n="rsvp.title">Confirm Your Attendance</h2>
             <p class="section-intro" data-i18n="rsvp.subtitle">Search for your name to find your invitation.</p>
-            <p class="deadline-badge" data-i18n="rsvp.deadline">Kindly respond by June 1, 2027</p>
+            <p class="deadline-badge" data-i18n="rsvp.deadline">Kindly respond by 01.06.2027</p>
 
             <div id="rsvpClosed" class="notice" hidden data-i18n="rsvp.closed"></div>
 
@@ -183,10 +184,10 @@
                     </label>
                 </fieldset>
 
-                <div id="rsvpCountWrap" class="field" hidden>
-                    <label for="rsvpCount" data-i18n="rsvp.howMany">How many of you will attend?</label>
-                    <select id="rsvpCount" class="form-input"></select>
-                </div>
+                <fieldset id="rsvpCountWrap" class="rsvp-count" hidden>
+                    <legend id="rsvpCountLabel"></legend>
+                    <div id="rsvpCount" class="count-options"></div>
+                </fieldset>
 
                 <div class="field">
                     <label for="rsvpNote" data-i18n="rsvp.note">Anything we should know? (optional)</label>
@@ -230,7 +231,7 @@
     </section>
 
     <!-- Photos Section -->
-    <section id="photos" class="photos">
+    <section id="photos" class="photos" hidden>
         <div class="container">
             <h2 data-i18n="photos.title">Share Your Photos</h2>
             <p class="section-intro" data-i18n="photos.subtitle">Captured a beautiful moment? Upload your photos and videos and they will go straight to our wedding album.</p>
@@ -262,6 +263,7 @@
     <script src="config.js"></script>
     <script src="guests.js"></script>
     <script src="i18n.js"></script>
+    <script src="tour.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
