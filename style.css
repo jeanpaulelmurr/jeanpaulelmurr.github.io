@@ -737,15 +737,37 @@ h2::after {
     box-shadow: 0 0 0 3px rgba(34, 70, 47, 0.25);
 }
 
-.rsvp-count {
-    border: none;
-    margin: 0.5rem 0 1.4rem;
+.rsvp-accept {
+    padding: 1rem 0.75rem 1.1rem;
+    border: 2px solid var(--stone-dark);
+    border-radius: 30px 30px 10px 10px;
+    background: white;
 }
 
-.rsvp-count legend {
-    width: 100%;
-    font-size: 1.1rem;
-    margin-bottom: 0.6rem;
+.count-label {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.7rem;
+}
+
+.rsvp-accept.single {
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.rsvp-accept.single .count-options {
+    display: block;
+}
+
+.rsvp-accept .choice {
+    margin: 0;
+}
+
+.choice-or {
+    color: var(--muted);
+    font-style: italic;
+    margin: 0.5rem 0;
 }
 
 .count-options {

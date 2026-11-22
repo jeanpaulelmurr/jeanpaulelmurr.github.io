@@ -56,10 +56,26 @@ function findGuest_(code) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Guests');
   if (!sheet) throw new Error('The Guests tab is missing');
   const rows = sheet.getDataRange().getValues();
+  // Columns are found by their header, so they can be in any order.
+  const headers = rows[0].map(h => String(h).trim().toLowerCase());
+  const col = (...names) => names.map(n => headers.indexOf(n)).find(i => i >= 0);
+  const codeCol = col('code');
+  const idCol = col('guest id');
+  const nameCol = col('invitation name', 'name');
+  const arCol = col('invitation name (arabic)', 'name in arabic');
+  const seatsCol = col('seats');
+  if ([codeCol, idCol, nameCol, seatsCol].some(i => i === undefined)) {
+    throw new Error('The Guests tab needs Code, Guest ID, Invitation name and Seats columns');
+  }
   for (let i = 1; i < rows.length; i++) {
-    const rowCode = String(rows[i][0]).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const rowCode = String(rows[i][codeCol]).toLowerCase().replace(/[^a-z0-9]/g, '');
     if (rowCode && rowCode === c) {
-      return { id: String(rows[i][1]), name: String(rows[i][2]), seats: clampInt_(rows[i][3], 1, 20) };
+      return {
+        id: String(rows[i][idCol]),
+        name: String(rows[i][nameCol]).trim(),
+        nameAr: arCol === undefined ? '' : String(rows[i][arCol]).trim(),
+        seats: clampInt_(rows[i][seatsCol], 1, 20)
+      };
     }
   }
   return null;
@@ -77,7 +93,7 @@ function lookup_(d) {
     const r = rows.find(row => String(row[1]) === g.id);
     if (r) previous = { attending: r[4] === 'Yes' ? 'yes' : 'no', count: Number(r[5]) || 0, note: String(r[6] || '') };
   }
-  return { guest: { name: g.name, seats: g.seats }, previous: previous };
+  return { guest: { name: g.name, nameAr: g.nameAr, seats: g.seats }, previous: previous };
 }
 
 function saveRsvp_(d) {

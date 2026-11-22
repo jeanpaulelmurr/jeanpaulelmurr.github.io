@@ -49,17 +49,20 @@ Version: New version** so the URL stays the same.
 ## Guest list and invitation codes
 
 The guest list is **not** on the website. It lives in a private **Guests** tab
-in the RSVP Google Sheet, with these columns:
+in the RSVP Google Sheet. The backend finds columns by their header, so their
+order doesn't matter:
 
-| Code | Guest ID | Name | Seats |
-|------|----------|------|-------|
+| Column | Used for |
+|--------|----------|
+| **Code** | The guest's personal invitation code. Their link is `https://www.vanessaandjeanpaulelmurr.com/?i=CODE`, or they can type it on the site. Don't change a code after it has been sent. |
+| **Guest ID** | Recorded in the RSVPs tab; keep it unique. |
+| **Invitation name** | Shown to the guest in English, e.g. "Mr. Georges & Mrs. Norma El Murr & Family". |
+| **Invitation name (Arabic)** | Shown on the Arabic version, e.g. "السيد جورج والسيدة نورما المر وعائلتهما". Optional; the English name is used when it's empty. |
+| **Seats** | The most people the guest can confirm. |
 
-- **Code**: the guest's personal invitation code. Their link is
-  `https://www.vanessaandjeanpaulelmurr.com/?i=CODE`. Guests can also type the
-  code on the site. Don't change a code after it has been sent.
-- **Guest ID**: recorded in the RSVPs tab; keep it unique.
-- **Name** and **Seats**: shown to the guest. The backend always uses these
-  values, so a guest can't change their name or number of seats.
+Other columns (Title, Name, Title 2, Second name, Family, To check) are only
+notes for you; the site ignores them. The backend always uses the sheet's
+values, so a guest can't change their name or number of seats.
 
 To add a guest, add a row with a new code (letters and digits, at least 6
 characters, not already used). Changes take effect immediately, no redeploy

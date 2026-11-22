@@ -73,12 +73,12 @@ const TRANSLATIONS = {
         'rsvp.question': 'Will you be joining us?',
         'rsvp.accept': 'Joyfully accept',
         'rsvp.decline': 'Regretfully decline',
-        'rsvp.howMany': 'How many of you will attend? (up to {max})',
-        'rsvp.chooseCount': 'Please choose how many of you will attend (1 to {max}).',
+        'rsvp.acceptCount': 'Joyfully accept. We will be:',
+        'rsvp.or': 'or',
         'rsvp.note': 'Anything we should know? (optional)',
         'rsvp.submit': 'Send my response',
         'rsvp.change': 'Not you? Enter another code',
-        'rsvp.chooseOption': 'Please let us know if you can attend.',
+        'rsvp.chooseOption': 'Please choose how many of you will attend, or decline.',
         'rsvp.thanksYes': 'Thank you, {name}! We can’t wait to celebrate with you. {seats} confirmed.',
         'rsvp.thanksNo': 'Thank you for letting us know, {name}. You will be dearly missed!',
         'rsvp.update': 'Change my response',
@@ -202,14 +202,14 @@ const TRANSLATIONS = {
         'rsvp.question': 'هل ستشاركوننا فرحتنا؟',
         'rsvp.accept': 'نلبّي الدعوة بكل سرور',
         'rsvp.decline': 'نعتذر عن الحضور',
-        'rsvp.howMany': 'كم شخصًا منكم سيحضر؟ (حتى {max})',
-        'rsvp.chooseCount': 'يُرجى اختيار عدد الأشخاص الذين سيحضرون (من 1 إلى {max}).',
+        'rsvp.acceptCount': 'نلبّي الدعوة بكل سرور، وسنكون:',
+        'rsvp.or': 'أو',
         'rsvp.note': 'هل من ملاحظة تودّون إعلامنا بها؟ (اختياري)',
         'rsvp.submit': 'إرسال الردّ',
         'rsvp.change': 'لستم أنتم؟ أدخلوا رمزًا آخر',
-        'rsvp.chooseOption': 'يُرجى إعلامنا إن كنتم ستحضرون.',
+        'rsvp.chooseOption': 'يُرجى اختيار عدد الحضور أو الاعتذار عن الحضور.',
         'rsvp.thanksYes': 'شكرًا {name}! ننتظر الاحتفال معكم بفارغ الصبر. تمّ تأكيد {seats}.',
-        'rsvp.thanksNo': 'شكرًا لإعلامنا يا {name}. سنفتقدكم كثيرًا!',
+        'rsvp.thanksNo': 'شكرًا لإعلامنا، {name}. سنفتقدكم كثيرًا!',
         'rsvp.update': 'تعديل ردّي',
 
         'msg.title': 'اتركوا لنا رسالة',
@@ -298,6 +298,8 @@ const I18N = {
         return str.replace(/\{(\w+)\}/g, (_, name) => {
             const v = vars[name];
             if (v && typeof v === 'object' && 'plural' in v) return this.plural(v.plural, v.n);
+            // A value given in both languages, e.g. a guest's invitation name.
+            if (v && typeof v === 'object' && 'en' in v) return (this.lang === 'ar' && v.ar) || v.en;
             return v ?? '';
         });
     },

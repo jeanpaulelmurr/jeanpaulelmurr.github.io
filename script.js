@@ -181,7 +181,6 @@ function initRsvp() {
     const welcome = document.getElementById('rsvpWelcome');
     const reserved = document.getElementById('rsvpReserved');
     const previous = document.getElementById('rsvpPrevious');
-    const countWrap = document.getElementById('rsvpCountWrap');
     const countOptions = document.getElementById('rsvpCount');
     const countLabel = document.getElementById('rsvpCountLabel');
     const note = document.getElementById('rsvpNote');
@@ -209,7 +208,9 @@ function initRsvp() {
         setStatus(codeStatus, 'rsvp.looking', {}, null);
         try {
             const res = await postToBackend({ type: 'lookup', code });
-            selected = { code, name: res.guest.name, seats: res.guest.seats, previous: res.previous };
+            // The invitation name in both languages; the page shows the one being read.
+            const name = { en: res.guest.name, ar: res.guest.nameAr || '' };
+            selected = { code, name, seats: res.guest.seats, previous: res.previous };
             saveCode(code);
             clearStatus(codeStatus);
             showForm(scroll);
@@ -237,33 +238,32 @@ function initRsvp() {
         I18N.set(welcome, 'rsvp.welcome', { name: g.name });
         I18N.set(reserved, 'rsvp.reserved', { seats: seatsVar(g.seats) });
 
-        // One button per possible number of attendees, 1 up to the seats reserved.
-        I18N.set(countLabel, 'rsvp.howMany', { max: g.seats });
+        // Accepting means choosing how many will come: one button for each number
+        // from 1 up to the seats reserved. A guest invited alone gets one "accept" button.
         countOptions.innerHTML = '';
+        countLabel.hidden = g.seats === 1;
+        countOptions.parentElement.classList.toggle('single', g.seats === 1);
         for (let i = 1; i <= g.seats; i++) {
             const label = document.createElement('label');
-            label.className = 'count-option';
+            label.className = g.seats === 1 ? 'choice' : 'count-option';
             const radio = document.createElement('input');
             radio.type = 'radio';
-            radio.name = 'count';
+            radio.name = 'response';
             radio.value = String(i);
             radio.addEventListener('change', () => clearStatus(status));
             const span = document.createElement('span');
-            span.textContent = String(i);
+            if (g.seats === 1) I18N.set(span, 'rsvp.accept');
+            else span.textContent = String(i);
             label.append(radio, span);
             countOptions.appendChild(label);
         }
-        countWrap.hidden = true;
 
         const saved = g.previous;
         previous.hidden = !saved;
         if (saved) {
-            form.querySelector(`input[name="attending"][value="${saved.attending}"]`).checked = true;
-            if (saved.attending === 'yes') {
-                countWrap.hidden = g.seats <= 1;
-                const prev = countOptions.querySelector(`input[value="${saved.count}"]`);
-                if (prev) prev.checked = true;
-            }
+            const value = saved.attending === 'yes' ? String(Math.min(saved.count || 1, g.seats)) : 'no';
+            const prev = form.querySelector(`input[name="response"][value="${value}"]`);
+            if (prev) prev.checked = true;
             note.value = saved.note || '';
         }
         if (scroll) form.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -286,12 +286,7 @@ function initRsvp() {
     });
     codeInput.addEventListener('input', () => clearStatus(codeStatus));
 
-    form.querySelectorAll('input[name="attending"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            countWrap.hidden = !(radio.value === 'yes' && radio.checked && selected.seats > 1);
-            clearStatus(status);
-        });
-    });
+    form.querySelector('input[name="response"][value="no"]').addEventListener('change', () => clearStatus(status));
 
     document.getElementById('rsvpChange').addEventListener('click', backToCode);
     document.getElementById('rsvpUpdate').addEventListener('click', () => showForm(true));
@@ -309,25 +304,13 @@ function initRsvp() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!selected) return;
-        const choice = form.querySelector('input[name="attending"]:checked');
+        const choice = form.querySelector('input[name="response"]:checked');
         if (!choice) {
             setStatus(status, 'rsvp.chooseOption', {}, 'error');
             return;
         }
-        const attending = choice.value;
-        let count = 0;
-        if (attending === 'yes') {
-            if (selected.seats === 1) {
-                count = 1;
-            } else {
-                const picked = countOptions.querySelector('input[name="count"]:checked');
-                if (!picked) {
-                    setStatus(status, 'rsvp.chooseCount', { max: selected.seats }, 'error');
-                    return;
-                }
-                count = Number(picked.value);
-            }
-        }
+        const attending = choice.value === 'no' ? 'no' : 'yes';
+        const count = attending === 'yes' ? Number(choice.value) : 0;
         const payload = {
             type: 'rsvp',
             code: selected.code,

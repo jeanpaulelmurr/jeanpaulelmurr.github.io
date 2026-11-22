@@ -176,21 +176,18 @@
                 <p id="rsvpReserved"></p>
                 <p id="rsvpPrevious" class="hint" hidden data-i18n="rsvp.previous"></p>
 
+                <!-- One tap answers both questions: a number accepts for that many people. -->
                 <fieldset class="rsvp-choice">
                     <legend data-i18n="rsvp.question">Will you be joining us?</legend>
+                    <div class="rsvp-accept">
+                        <p id="rsvpCountLabel" class="count-label" data-i18n="rsvp.acceptCount">Joyfully accept. We will be:</p>
+                        <div id="rsvpCount" class="count-options"></div>
+                    </div>
+                    <p class="choice-or" data-i18n="rsvp.or">or</p>
                     <label class="choice">
-                        <input type="radio" name="attending" value="yes">
-                        <span data-i18n="rsvp.accept">Joyfully accept</span>
-                    </label>
-                    <label class="choice">
-                        <input type="radio" name="attending" value="no">
+                        <input type="radio" name="response" value="no">
                         <span data-i18n="rsvp.decline">Regretfully decline</span>
                     </label>
-                </fieldset>
-
-                <fieldset id="rsvpCountWrap" class="rsvp-count" hidden>
-                    <legend id="rsvpCountLabel"></legend>
-                    <div id="rsvpCount" class="count-options"></div>
                 </fieldset>
 
                 <div class="field">
