@@ -5,7 +5,6 @@ Jean Paul &amp; Vanessa's wedding - 2027
 
 - `index.html`, `style.css`, `script.js`: the site
 - `i18n.js`: English and Arabic text. Edit both languages here.
-- `guests.js`: the guest list (name and number of seats)
 - `config.js`: backend URL, RSVP deadline, event date and location
 - `wedding.ics`: the "Apple Calendar" event
 - `apps-script/Code.gs`: the backend that stores RSVPs, messages and photos
@@ -47,8 +46,21 @@ many uploads and messages it takes per hour (see `LIMITS` in `Code.gs`).
 If you change `Code.gs` later, use **Deploy > Manage deployments > Edit >
 Version: New version** so the URL stays the same.
 
-## Updating the guest list
+## Guest list and invitation codes
 
-Edit `guests.js`. Each entry has an `id` (recorded in the RSVP sheet; keep it
-unique and don't change it after invitations go out), the `name` guests search
-for, and `seats`.
+The guest list is **not** on the website. It lives in a private **Guests** tab
+in the RSVP Google Sheet, with these columns:
+
+| Code | Guest ID | Name | Seats |
+|------|----------|------|-------|
+
+- **Code**: the guest's personal invitation code. Their link is
+  `https://www.vanessaandjeanpaulelmurr.com/?i=CODE`. Guests can also type the
+  code on the site. Don't change a code after it has been sent.
+- **Guest ID**: recorded in the RSVPs tab; keep it unique.
+- **Name** and **Seats**: shown to the guest. The backend always uses these
+  values, so a guest can't change their name or number of seats.
+
+To add a guest, add a row with a new code (letters and digits, at least 6
+characters, not already used). Changes take effect immediately, no redeploy
+needed.

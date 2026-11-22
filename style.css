@@ -622,6 +622,28 @@ h2::after {
     margin: 0 auto;
 }
 
+.code-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.code-row .guest-input {
+    flex: 1 1 220px;
+    min-width: 0;
+    letter-spacing: 0.08em;
+}
+
+.code-row .btn-primary {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 480px) {
+    .code-row .btn-primary {
+        flex: 1 1 100%;
+    }
+}
+
 .guest-input,
 .form-input {
     width: 100%;
@@ -646,48 +668,10 @@ h2::after {
     box-shadow: 0 0 0 3px rgba(34, 70, 47, 0.15);
 }
 
-.guest-results {
-    list-style: none;
-    margin-top: 0.75rem;
-    display: grid;
-    gap: 0.5rem;
-}
 
-.guest-option {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.85rem 1.2rem;
-    background: var(--marble);
-    border: 1px solid var(--stone-dark);
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 1.1rem;
-    color: var(--text);
-    text-align: start;
-    transition: border-color 0.2s, transform 0.2s;
-}
 
-.guest-option:hover,
-.guest-option:focus-visible {
-    border-color: var(--primary);
-    transform: translateY(-1px);
-    outline: none;
-}
 
-.guest-option-name {
-    font-weight: 600;
-    color: var(--primary);
-}
 
-.guest-option-seats {
-    color: var(--muted);
-    font-size: 0.95rem;
-    white-space: nowrap;
-}
 
 .rsvp-card {
     max-width: 560px;
@@ -1128,9 +1112,6 @@ textarea.form-input {
 
 /* Guest names stay in Latin script */
 [dir="rtl"] .guest-input,
-[dir="rtl"] .guest-option-name {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-}
 
 /* Footer */
 footer {

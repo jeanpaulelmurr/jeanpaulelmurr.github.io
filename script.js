@@ -1,5 +1,4 @@
 const CONFIG = window.WEDDING_CONFIG;
-const GUESTS = window.GUESTS || [];
 
 // Scripts load at the end of <body>, so the DOM is ready. Translating right away
 // avoids a flash of English for visitors who chose Arabic.
@@ -155,53 +154,29 @@ function clearStatus(el) {
 
 /* ---------- RSVP ---------- */
 
-const normalize = s => s
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-const GUEST_INDEX = GUESTS.map(g => {
-    const norm = normalize(g.name);
-    return { guest: g, norm, tokens: norm.split(' ') };
-});
-
-function searchGuests(query) {
-    const q = normalize(query);
-    if (q.length < 2) return [];
-    const qTokens = q.split(' ');
-    return GUEST_INDEX
-        .map(entry => {
-            const allPrefix = qTokens.every(qt => entry.tokens.some(t => t.startsWith(qt)));
-            if (allPrefix) return { entry, score: entry.norm.startsWith(q) ? 0 : 1 };
-            if (entry.norm.includes(q)) return { entry, score: 2 };
-            return null;
-        })
-        .filter(Boolean)
-        .sort((a, b) => a.score - b.score || a.entry.guest.name.localeCompare(b.entry.guest.name))
-        .slice(0, 8)
-        .map(r => r.entry.guest);
-}
-
 function seatsVar(n) {
     return { plural: 'seat', n };
 }
 
-function loadSavedRsvp(id) {
-    try { return JSON.parse(localStorage.getItem(`rsvp:${id}`)); } catch (e) { return null; }
+// Invitation codes: letters and digits only, case-insensitive.
+const cleanCode = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+function loadSavedCode() {
+    try { return localStorage.getItem('rsvp:code') || ''; } catch (e) { return ''; }
 }
 
-function saveRsvp(id, data) {
-    try { localStorage.setItem(`rsvp:${id}`, JSON.stringify(data)); } catch (e) { /* ignore */ }
+function saveCode(code) {
+    try {
+        if (code) localStorage.setItem('rsvp:code', code);
+        else localStorage.removeItem('rsvp:code');
+    } catch (e) { /* ignore */ }
 }
 
 function initRsvp() {
-    const input = document.getElementById('guestInput');
-    const results = document.getElementById('guestResults');
-    const noResults = document.getElementById('guestNoResults');
-    const searchBox = document.getElementById('rsvpSearch');
+    const codeForm = document.getElementById('rsvpSearch');
+    const codeInput = document.getElementById('codeInput');
+    const codeSubmit = document.getElementById('codeSubmit');
+    const codeStatus = document.getElementById('codeStatus');
     const form = document.getElementById('rsvpForm');
     const welcome = document.getElementById('rsvpWelcome');
     const reserved = document.getElementById('rsvpReserved');
@@ -215,40 +190,45 @@ function initRsvp() {
     const done = document.getElementById('rsvpDone');
     const thanks = document.getElementById('rsvpThanks');
 
+    // The invitation the guest opened: { code, name, seats, previous }.
     let selected = null;
 
     if (new Date() > new Date(CONFIG.rsvpDeadline)) {
         document.getElementById('rsvpClosed').hidden = false;
-        searchBox.hidden = true;
+        codeForm.hidden = true;
         return;
     }
 
-    function renderResults() {
-        const query = input.value;
-        const matches = searchGuests(query);
-        results.innerHTML = '';
-        matches.forEach(g => {
-            const li = document.createElement('li');
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'guest-option';
-            const name = document.createElement('span');
-            name.className = 'guest-option-name';
-            name.textContent = g.name;
-            const seats = document.createElement('span');
-            seats.className = 'guest-option-seats';
-            seats.textContent = I18N.plural('seat', g.seats);
-            btn.append(name, seats);
-            btn.addEventListener('click', () => selectGuest(g));
-            li.appendChild(btn);
-            results.appendChild(li);
-        });
-        noResults.hidden = !(normalize(query).length >= 2 && matches.length === 0);
+    async function openInvitation(rawCode, { scroll = true, quiet = false } = {}) {
+        const code = cleanCode(rawCode);
+        if (code.length < 4) {
+            if (!quiet) setStatus(codeStatus, 'rsvp.enterCode', {}, 'error');
+            return;
+        }
+        codeSubmit.disabled = true;
+        setStatus(codeStatus, 'rsvp.looking', {}, null);
+        try {
+            const res = await postToBackend({ type: 'lookup', code });
+            selected = { code, name: res.guest.name, seats: res.guest.seats, previous: res.previous };
+            saveCode(code);
+            clearStatus(codeStatus);
+            showForm(scroll);
+        } catch (err) {
+            if (err.message === 'unknown-code') {
+                saveCode('');
+                if (!quiet) setStatus(codeStatus, 'rsvp.noResults', {}, 'error');
+                else clearStatus(codeStatus);
+            } else {
+                setStatus(codeStatus, errorKey(err), {}, 'error');
+            }
+        } finally {
+            codeSubmit.disabled = false;
+        }
     }
 
-    function selectGuest(g) {
-        selected = g;
-        searchBox.hidden = true;
+    function showForm(scroll) {
+        const g = selected;
+        codeForm.hidden = true;
         done.hidden = true;
         form.hidden = false;
         form.reset();
@@ -275,7 +255,7 @@ function initRsvp() {
         }
         countWrap.hidden = true;
 
-        const saved = loadSavedRsvp(g.id);
+        const saved = g.previous;
         previous.hidden = !saved;
         if (saved) {
             form.querySelector(`input[name="attending"][value="${saved.attending}"]`).checked = true;
@@ -286,21 +266,25 @@ function initRsvp() {
             }
             note.value = saved.note || '';
         }
-        form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (scroll) form.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    function backToSearch() {
+    function backToCode() {
         selected = null;
+        saveCode('');
         form.hidden = true;
         done.hidden = true;
-        searchBox.hidden = false;
-        input.value = '';
-        renderResults();
-        input.focus();
+        codeForm.hidden = false;
+        codeInput.value = '';
+        clearStatus(codeStatus);
+        codeInput.focus();
     }
 
-    input.addEventListener('input', renderResults);
-    document.addEventListener('languagechange-site', () => { if (!searchBox.hidden) renderResults(); });
+    codeForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        openInvitation(codeInput.value);
+    });
+    codeInput.addEventListener('input', () => clearStatus(codeStatus));
 
     form.querySelectorAll('input[name="attending"]').forEach(radio => {
         radio.addEventListener('change', () => {
@@ -309,8 +293,18 @@ function initRsvp() {
         });
     });
 
-    document.getElementById('rsvpChange').addEventListener('click', backToSearch);
-    document.getElementById('rsvpUpdate').addEventListener('click', () => selectGuest(selected));
+    document.getElementById('rsvpChange').addEventListener('click', backToCode);
+    document.getElementById('rsvpUpdate').addEventListener('click', () => showForm(true));
+
+    // Personal link (?i=CODE) opens the invitation straight away; otherwise
+    // reopen the last invitation used on this device.
+    const linkCode = new URLSearchParams(location.search).get('i');
+    if (linkCode) {
+        codeInput.value = cleanCode(linkCode);
+        openInvitation(linkCode, { scroll: false });
+    } else if (loadSavedCode()) {
+        openInvitation(loadSavedCode(), { scroll: false, quiet: true });
+    }
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -336,9 +330,7 @@ function initRsvp() {
         }
         const payload = {
             type: 'rsvp',
-            guestId: selected.id,
-            name: selected.name,
-            seats: selected.seats,
+            code: selected.code,
             attending,
             count,
             note: note.value.trim(),
@@ -349,7 +341,7 @@ function initRsvp() {
         setStatus(status, 'common.sending', {}, null);
         try {
             await postToBackend(payload);
-            saveRsvp(selected.id, { attending, count, note: payload.note });
+            selected.previous = { attending, count, note: payload.note };
             clearStatus(status);
             form.hidden = true;
             done.hidden = false;
@@ -360,7 +352,7 @@ function initRsvp() {
             }
             document.getElementById('rsvpDoneCalendar').hidden = attending !== 'yes';
         } catch (err) {
-            setStatus(status, errorKey(err), {}, 'error');
+            setStatus(status, err.message === 'unknown-code' ? 'rsvp.noResults' : errorKey(err), {}, 'error');
         } finally {
             submit.disabled = false;
         }

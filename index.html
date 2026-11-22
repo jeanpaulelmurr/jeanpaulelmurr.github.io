@@ -148,24 +148,28 @@
     <section id="rsvp" class="rsvp">
         <div class="container">
             <h2 data-i18n="rsvp.title">Confirm Your Attendance</h2>
-            <p class="section-intro" data-i18n="rsvp.subtitle">Search for your name to find your invitation.</p>
+            <p class="section-intro" data-i18n="rsvp.subtitle">Open the personal link from your invitation, or enter the code it contains.</p>
             <p class="deadline-badge" data-i18n="rsvp.deadline">Kindly respond by 01.06.2027</p>
 
             <div id="rsvpClosed" class="notice" hidden data-i18n="rsvp.closed"></div>
 
-            <div id="rsvpSearch" class="guest-search">
-                <input
-                    type="search"
-                    id="guestInput"
-                    class="guest-input"
-                    autocomplete="off"
-                    data-i18n-placeholder="rsvp.placeholder"
-                    data-i18n-aria="rsvp.searchLabel"
-                    aria-controls="guestResults"
-                >
-                <ul id="guestResults" class="guest-results"></ul>
-                <p id="guestNoResults" class="hint" hidden data-i18n="rsvp.noResults"></p>
-            </div>
+            <form id="rsvpSearch" class="guest-search code-form" novalidate>
+                <div class="code-row">
+                    <input
+                        type="text"
+                        id="codeInput"
+                        class="guest-input"
+                        autocomplete="off"
+                        autocapitalize="none"
+                        spellcheck="false"
+                        maxlength="20"
+                        data-i18n-placeholder="rsvp.placeholder"
+                        data-i18n-aria="rsvp.searchLabel"
+                    >
+                    <button type="submit" class="btn-primary" id="codeSubmit" data-i18n="rsvp.find">Find my invitation</button>
+                </div>
+                <div id="codeStatus" class="form-status" role="status"></div>
+            </form>
 
             <form id="rsvpForm" class="rsvp-card" hidden novalidate>
                 <h3 id="rsvpWelcome"></h3>
@@ -261,7 +265,6 @@
     </footer>
 
     <script src="config.js"></script>
-    <script src="guests.js"></script>
     <script src="i18n.js"></script>
     <script src="tour.js"></script>
     <script src="script.js"></script>

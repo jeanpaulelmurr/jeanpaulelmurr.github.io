@@ -3,6 +3,10 @@
  *
  * Stores RSVPs and messages in the Google Sheet this script is attached to,
  * and saves guest photo uploads to a Google Drive folder.
+ *
+ * The guest list lives in the Sheet's private "Guests" tab (Code, Guest ID,
+ * Name, Seats). Guests open their invitation with their personal code, so the
+ * list is never published on the website.
  * Setup steps are in the repository README.md.
  */
 
@@ -19,7 +23,8 @@ const PHOTOS_OPEN_DATE = new Date('2027-07-01T00:00:00+03:00');
 const LIMITS = {
   photosPerHour: 400,                       // number of files
   photoBytesPerDay: 4 * 1024 * 1024 * 1024, // 4 GB per day (Drive's free plan is 15 GB)
-  messagesPerHour: 60
+  messagesPerHour: 60,
+  lookupsPerHour: 200                       // invitation code checks (slows down guessing)
 };
 
 function doGet() {
@@ -30,6 +35,7 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     switch (data.type) {
+      case 'lookup': return json_(Object.assign({ ok: true }, lookup_(data)));
       case 'rsvp': saveRsvp_(data); break;
       case 'message': saveMessage_(data); break;
       case 'photo': savePhoto_(data); break;
@@ -41,14 +47,51 @@ function doPost(e) {
   }
 }
 
+const RSVP_HEADERS = ['Updated at', 'Guest ID', 'Name', 'Seats invited', 'Attending', 'Number attending', 'Note', 'Language'];
+
+// Find the guest for an invitation code in the private "Guests" tab.
+function findGuest_(code) {
+  const c = String(code || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (c.length < 4) return null;
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Guests');
+  if (!sheet) throw new Error('The Guests tab is missing');
+  const rows = sheet.getDataRange().getValues();
+  for (let i = 1; i < rows.length; i++) {
+    const rowCode = String(rows[i][0]).toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (rowCode && rowCode === c) {
+      return { id: String(rows[i][1]), name: String(rows[i][2]), seats: clampInt_(rows[i][3], 1, 20) };
+    }
+  }
+  return null;
+}
+
+// Check an invitation code. Returns the guest and their latest answer, if any.
+function lookup_(d) {
+  takeQuota_('lookups', LIMITS.lookupsPerHour, 0, 0);
+  const g = findGuest_(d.code);
+  if (!g) throw new Error('unknown-code');
+  let previous = null;
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('RSVPs');
+  if (sheet && sheet.getLastRow() > 1) {
+    const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, RSVP_HEADERS.length).getValues();
+    const r = rows.find(row => String(row[1]) === g.id);
+    if (r) previous = { attending: r[4] === 'Yes' ? 'yes' : 'no', count: Number(r[5]) || 0, note: String(r[6] || '') };
+  }
+  return { guest: { name: g.name, seats: g.seats }, previous: previous };
+}
+
 function saveRsvp_(d) {
-  const seats = clampInt_(d.seats, 1, 20);
+  // Name and seats come from the Guests tab, never from the browser.
+  takeQuota_('lookups', LIMITS.lookupsPerHour, 0, 0);
+  const g = findGuest_(d.code);
+  if (!g) throw new Error('unknown-code');
+  const seats = g.seats;
   const attending = d.attending === 'yes' ? 'Yes' : 'No';
   const count = attending === 'Yes' ? clampInt_(d.count, 1, seats) : 0;
   const row = [
     new Date(),
-    clean_(d.guestId, 100),
-    clean_(d.name, 150),
+    clean_(g.id, 100),
+    clean_(g.name, 150),
     seats,
     attending,
     count,
@@ -59,7 +102,7 @@ function saveRsvp_(d) {
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
-    const headers = ['Updated at', 'Guest ID', 'Name', 'Seats invited', 'Attending', 'Number attending', 'Note', 'Language'];
+    const headers = RSVP_HEADERS;
     // Every response is kept here, so an earlier answer is never lost.
     sheet_('RSVP history', headers).appendRow(row);
 
