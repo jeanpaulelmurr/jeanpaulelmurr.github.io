@@ -28,6 +28,8 @@ const TRANSLATIONS = {
         'hero.date': '17.07.2027',
 
         'story.title': 'Our Love Story',
+        'story.p1': 'Ten years ago, we met at university, never knowing we’d find our forever in each other. Inseparable ever since, we’ve shared countless memories, endless laughter & a love that only grows stronger.',
+        'story.p2': 'Now, our favorite story is becoming our forever',
 
         'inv.together': 'Together with their families',
         'inv.request': 'request the honor of your presence at the wedding of',
@@ -157,6 +159,8 @@ const TRANSLATIONS = {
         'hero.date': '17.07.2027',
 
         'story.title': 'قصة حبّنا',
+        'story.p1': 'قبل عشر سنوات، التقينا في الجامعة، من دون أن ندري أنّنا سنجد في بعضنا شريك العمر. ومنذ ذلك الحين لم نفترق، فتشاركنا ذكريات لا تُحصى وضحكات لا تنتهي، وحبًّا يزداد قوّةً يومًا بعد يوم.',
+        'story.p2': 'واليوم، قصّتنا المفضّلة تصبح قصّة العمر',
 
         'inv.together': 'مع عائلتيهما',
         'inv.request': 'يتشرّفان بدعوتكم لحضور حفل زفاف',
