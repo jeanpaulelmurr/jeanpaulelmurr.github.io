@@ -425,11 +425,6 @@ h2::after {
     margin-top: 1rem;
 }
 
-.story-signature {
-    font-family: 'Pinyon Script', 'Cormorant Garamond', Georgia, cursive;
-    font-size: 2rem;
-    color: var(--heading);
-}
 
 .gallery-grid {
     display: grid;
